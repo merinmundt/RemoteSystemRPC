@@ -30,11 +30,6 @@ long get_response()
     return(choice);
 }
 
-// int main(int argc, char **argv){
-//     char resp = get_response();
-//     printf("%c", resp);
-
-// }
 
 int main(int argc, char **argv)
 {
@@ -66,9 +61,9 @@ int main(int argc, char **argv)
             clnt_perror(cl, server);
             exit(3);
         }
-        printf("here\n");
+        //printf("here\n");
 	    printf("  %s\n", *sresult);
-        printf("here 3\n");
+        //printf("here 3\n");
 	    response = get_response();
     }
     clnt_destroy(cl);		/* done with the handle */
