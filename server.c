@@ -1,6 +1,7 @@
 /*
  * date_proc.c - remote procedures; called by server stub.
  */
+#include <stdlib.h>
 #include <rpc/rpc.h>    /* standard RPC include file */
 #include <time.h>
 #include <sys/types.h>
@@ -25,7 +26,7 @@ char ** date_1(long *option)
     struct mallinfo myMallInfo;
     int pagesize;
     int physPages;
-
+    double loadavg[3];
 
     clock = time(0);
     timeptr = localtime(&clock);
@@ -53,11 +54,12 @@ char ** date_1(long *option)
                 physPages = get_phys_pages();
                 printf("Page Size: %d\nPhysical Pages: %d\nTotal free space: %d\nTotal Allocated Spage: %d\n ", pagesize, physPages, myMallInfo.fordblks, myMallInfo.uordblks);
                 break;
-        case 6:
+        case 6: getloadavg(loadavg, maxNumForProc);
+                printf("Load Processes per \n   1 min: %d\n   5 min: %d\n   15 min: %d\n", loadavg[0], loadavg[1], loadavg[2]);
                 break;
 
         default: ptr=err;
                  break;
         }
     return(&ptr);
-
+}
