@@ -14,12 +14,15 @@ long get_response()
     long choice;
 
     printf("===========================================\n");
-    printf("                   Menu: \n");
+    printf("    Choose what info you want to see: \n");
     printf("-------------------------------------------\n");
     printf("                1. Date\n");
     printf("                2. Time\n");
     printf("                3. Both\n");
-    printf("                4. Quit\n");
+    printf("                4. CPU usage\n");
+    printf("                5. Memory Usage\n");
+    printf("                6. Load Procs per min\n");
+    printf("                7. Quit\n");
     printf("-------------------------------------------\n");
     printf("               Choice (1-4):");
     scanf("%ld",&choice);
@@ -27,7 +30,13 @@ long get_response()
     return(choice);
 }
 
-main(int argc, char **argv)
+// int main(int argc, char **argv){
+//     char resp = get_response();
+//     printf("%c", resp);
+
+// }
+
+int main(int argc, char **argv)
 {
     CLIENT  *cl;        /* RPC handle */
     char    *server;
@@ -42,23 +51,28 @@ main(int argc, char **argv)
     }
     server = argv[1];
     lresult = (&response);
+
     /*
      * Create the client "handle."
      */
-    if ( (cl = clnt_create(server, DATE_PROG, DATE_VERS, "udp")) == NULL) {
+    if ( (cl = clnt_create(server, getDate, getDateVersion, "udp")) == NULL) {
         clnt_pcreateerror(server);
         exit(2);
     }
+
     response = get_response();
-    while(response != 4) {
+    while(response != 7) {
         if ((sresult = date_1(lresult, cl)) == NULL) {
             clnt_perror(cl, server);
             exit(3);
         }
-	printf("  %s\n", *sresult);
-	response = get_response();
+        printf("here\n");
+	    printf("  %s\n", *sresult);
+        printf("here 3\n");
+	    response = get_response();
     }
     clnt_destroy(cl);		/* done with the handle */
+    printf("goodbye\n");
     exit(0);
 }
 
