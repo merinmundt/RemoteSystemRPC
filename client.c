@@ -10,9 +10,9 @@
 long get_response(void);
 
 long get_response()
-{
+{   
     long choice;
-
+    
     printf("===========================================\n");
     printf("    Choose what info you want to see: \n");
     printf("-------------------------------------------\n");
@@ -30,45 +30,47 @@ long get_response()
     return(choice);
 }
 
+ int main(int argc, char **argv)
+ {
+     CLIENT  *cl;        /* RPC handle */
+         char    *server;
+         char    **sresult;  /* return value from date_1()      */
+         char    s[MAX_LEN];    /* character array to hold output */
+         long    response;  /* user response                           */
+         long    *lresult;    /* pointer to user response          */
 
-int main(int argc, char **argv)
-{
-    CLIENT  *cl;        /* RPC handle */
-    char    *server;
-    char    **sresult;  /* return value from date_1()      */
-    char    s[MAX_LEN];    /* character array to hold output */
-    long    response;  /* user response                           */
-    long    *lresult;    /* pointer to user response          */
+         if (argc != 2) {
+             fprintf(stderr, "usage: %s hostname\n", argv[0]);
+             exit(1);
+          }
 
-    if (argc != 2) {
-        fprintf(stderr, "usage: %s hostname\n", argv[0]);
-        exit(1);
-    }
-    server = argv[1];
-    lresult = (&response);
+         server = argv[1];
+         lresult = (&response);
 
-    /*
-     * Create the client "handle."
-     */
-    if ( (cl = clnt_create(server, getDate, getDateVersion, "udp")) == NULL) {
-        clnt_pcreateerror(server);
-        exit(2);
-    }
+         /*
+         * Create the client "handle."
+         */
+         if ( (cl = clnt_create(server, getDate, getDateVersion, "udp")) == NULL) {
+                 clnt_pcreateerror(server);
+                 exit(2);
+         }
 
-    response = get_response();
-    while(response != 7) {
-        if ((sresult = date_1(lresult, cl)) == NULL) {
-            clnt_perror(cl, server);
-            exit(3);
+         response = get_response();
+         while(response != 7) {
+                if ((sresult = date_1(lresult, cl)) == NULL){
+                        clnt_perror(cl, server);
+                        exit(3);
+                 }                                                                                               
+                //printf("here\n");
+                printf("%s\n", *sresult);
+                //printf("here3\n"); 
+                response = get_response();
         }
-        //printf("here\n");
-	    printf("  %s\n", *sresult);
-        //printf("here 3\n");
-	    response = get_response();
-    }
-    clnt_destroy(cl);		/* done with the handle */
-    printf("goodbye\n");
-    exit(0);
+
+        clnt_destroy(cl);               /* done with the handle */
+        printf("goodbye\n");
+        exit(0);
 }
+
 
 

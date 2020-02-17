@@ -1,7 +1,6 @@
-/*
- * date_proc.c - remote procedures; called by server stub.
- */
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include <rpc/rpc.h>    /* standard RPC include file */
 #include <time.h>
 #include <sys/types.h>
@@ -11,11 +10,11 @@
 
 #define MAX_LEN 100
 /*
- * Return the binary date and time.
- */
+ *  * Return the binary date and time.
+ *   */
 char ** date_1(long *option)
 {
-    printf("here2\n");
+    //printf("here2\n");
     struct tm *timeptr; /* Pointer to time structure      */
     time_t clock;       /* Clock value (in secs)          */
     static char *ptr;   /* Return string                  */
@@ -26,7 +25,9 @@ char ** date_1(long *option)
     struct mallinfo myMallInfo;
     int pagesize;
     int physPages;
+    int maxNumForProc = 6;
     double loadavg[3];
+
 
     clock = time(0);
     timeptr = localtime(&clock);
@@ -46,16 +47,20 @@ char ** date_1(long *option)
                 break;
         case 4: sysinfo(&mysys);
                 CPUinfo = mysys.loads[0];
-                //printf("here4\n");
-                printf("CPU usage: %ld\n", CPUinfo);
+                sprintf(s,"CPU usage: %ld\n", CPUinfo);
+                ptr = s;
                 break;
+
         case 5: myMallInfo = mallinfo();
                 pagesize = getpagesize();
                 physPages = get_phys_pages();
-                printf("Page Size: %d\nPhysical Pages: %d\nTotal free space: %d\nTotal Allocated Spage: %d\n ", pagesize, physPages, myMallInfo.fordblks, myMallInfo.uordblks);
+                sprintf(s,"Page Size: %d\nPhysical Pages: %d\nTotal free space: %d\nTotal Allocated Spage: %d\n ", pagesize, physPages, myMallInfo.fordblks, myMallInfo.uordblks);
+                ptr = s;
                 break;
+
         case 6: getloadavg(loadavg, maxNumForProc);
-                printf("Load Processes per \n   1 min: %d\n   5 min: %d\n   15 min: %d\n", loadavg[0], loadavg[1], loadavg[2]);
+                sprintf(s,"Load Processes per \n   1 min: %d\n   5 min: %d\n   15 min: %d\n", loadavg[0], loadavg[1], loadavg[2]);
+                ptr = s;
                 break;
 
         default: ptr=err;
